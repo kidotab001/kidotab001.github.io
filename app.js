@@ -454,6 +454,17 @@ uiCanvas.addEventListener('touchstart', (event) => {
 
 uiCanvas.addEventListener('touchend', (event) => {
     mouse.isDown = false;
+    
+    //Firing click handler on touch screens
+    const touch = event.changedTouches[0];
+    const mouseEvent = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+    });
+    uiCanvas.dispatchEvent(mouseEvent);
 }, { passive: false });
 
 uiCanvas.addEventListener('touchmove', (event) => {
