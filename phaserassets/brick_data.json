@@ -1,42 +1,10 @@
 {
-  "0": {
-    "texture": "brick-black",
-    "health": 0,
-    "score": 0
-  },
-  "1": {
-    "texture": "brick-purple",
-    "health": 1,
-    "score": 10
-  },
-  "2": {
-    "texture": "brick-blue",
-    "health": 1,
-    "score": 15
-  },
-  "3": {
-    "texture": "brick-cyan",
-    "health": 1,
-    "score": 20
-  },
-  "4": {
-    "texture": "brick-green",
-    "health": 1,
-    "score": 25
-  },
-  "5": {
-    "texture": "brick-yellow",
-    "health": 1,
-    "score": 30
-  },
-  "6": {
-    "texture": "brick-red",
-    "health": 1,
-    "score": 50
-  },
-  "7": {
-    "texture": "brick-white",
-    "health": 2,
-    "score": 100
-  }
+  "0":{"texture":"brick-black","health":0,"score":0},
+  "1":{"texture":"brick-purple","health":1,"score":10},
+  "2":{"texture":"brick-blue","health":1,"score":15},
+  "3":{"texture":"brick-cyan","health":1,"score":20},
+  "4":{"texture":"brick-green","health":1,"score":25},
+  "5":{"texture":"brick-yellow","health":1,"score":30},
+  "6":{"texture":"brick-red","health":1,"score":50},
+  "7":{"texture":"brick-white","health":2,"score":100}
 }
