@@ -1,0 +1,25 @@
+/* Basic reset to make the game container fill the entire browser viewport */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevents scrollbars from appearing */
+  background-color: #333; /* Background for the area outside the game canvas */
+}
+
+/* The container for the Phaser canvas */
+#game-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ensure the canvas itself also fills the container */
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

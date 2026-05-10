@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML5 Canvas Piano</title>
+    <style>
+        body {
+            display: flex;
+            /* Change flex-direction to stack canvas and button */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #2c3e50;
+            font-family: 'Arial', sans-serif;
+        }
+        canvas {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4), 0 5px 10px rgba(0,0,0,0.3);
+            border: 5px solid #333;
+        }
+        /* Style for the new export button */
+        .export-button {
+            display: block;
+            margin-top: 25px; /* Add space below the canvas */
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #1abc9c;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+        .export-button:hover {
+            background-color: #16a085;
+        }
+        .export-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- The canvas where the piano will be drawn -->
+    <canvas id="pianoCanvas" width="800" height="600"></canvas>
+    <!-- Button to trigger the PNG export -->
+    <button id="exportButton" class="export-button">Export Keys as PNG</button>
+
+    <script>
+        const canvas = document.getElementById('pianoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // The AudioContext will be initialized after the first user interaction.
+        let audioContext;
+
+        const keys = [
+            { note: 'C4', type: 'white', frequency: 261.63 }, { note: 'D4', type: 'white', frequency: 293.66 },
+            { note: 'E4', type: 'white', frequency: 329.63 }, { note: 'F4', type: 'white', frequency: 349.23 },
+            { note: 'G4', type: 'white', frequency: 392.00 }, { note: 'A4', type: 'white', frequency: 440.00 },
+            { note: 'B4', type: 'white', frequency: 493.88 }, { note: 'C5', type: 'white', frequency: 523.25 },
+            { note: 'C#4', type: 'black', frequency: 277.18 }, { note: 'D#4', type: 'black', frequency: 311.13 },
+            { note: 'F#4', type: 'black', frequency: 369.99 }, { note: 'G#4', type: 'black', frequency: 415.30 },
+            { note: 'A#4', type: 'black', frequency: 466.16 },
+        ];
+
+        // --- Geometry Calculation ---
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        
+        const whiteKeys = keys.filter(key => key.type === 'white');
+        const blackKeys = keys.filter(key => key.type === 'black');
+
+        const whiteKeyWidth = (canvasWidth - 24) / whiteKeys.length;
+        const whiteKeyHeight = 400;
+        const blackKeyWidth = whiteKeyWidth * 0.6;
+        const blackKeyHeight = whiteKeyHeight * 0.5;
+        const keyStartY = (canvasHeight - whiteKeyHeight) / 2;
+
+        whiteKeys.forEach((key, index) => {
+            key.x = 12 + index * whiteKeyWidth; key.y = keyStartY; key.width = whiteKeyWidth;
+            key.height = whiteKeyHeight; key.isPressed = false;
+        });
+
+        blackKeys.forEach(key => {
+            const precedingWhiteKeyNote = key.note.charAt(0);
+            const precedingWhiteKey = whiteKeys.find(wk => wk.note.startsWith(precedingWhiteKeyNote));
+            key.x = precedingWhiteKey.x + whiteKeyWidth - (blackKeyWidth / 2); key.y = keyStartY;
+            key.width = blackKeyWidth; key.height = blackKeyHeight; key.isPressed = false;
+        });
+        
+        function playSound(frequency) {
+            if (!audioContext) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            const now = audioContext.currentTime;
+            gainNode.gain.setValueAtTime(0.8, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+            oscillator.start(now);
+            oscillator.stop(now + 1);
+        }
+
+        /**
+         * Draws a single piano key with rounded bottom corners.
+         * @param {object} key - The key object to draw.
+         */
+        function drawKey(key) {
+            if (key.type === 'white') {
+                ctx.fillStyle = key.isPressed ? '#ddd' : '#fff';
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+            } else {
+                ctx.fillStyle = key.isPressed ? '#444' : '#222';
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1;
+            }
+            
+            // Draw path with rounded bottom corners
+            const cornerRadius = 12;
+            ctx.beginPath();
+            ctx.moveTo(key.x, key.y); // Top-left
+            ctx.lineTo(key.x + key.width, key.y); // Top-right
+            ctx.lineTo(key.x + key.width, key.y + key.height - cornerRadius); // Bottom-right before corner
+            ctx.arcTo(key.x + key.width, key.y + key.height, key.x + key.width - cornerRadius, key.y + key.height, cornerRadius);
+            ctx.lineTo(key.x + cornerRadius, key.y + key.height); // Bottom-left before corner
+            ctx.arcTo(key.x, key.y + key.height, key.x, key.y + key.height - cornerRadius, cornerRadius);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Add gradient overlay for 3D effect on white keys
+            if (key.type === 'white') {
+                const gradient = ctx.createLinearGradient(key.x, key.y, key.x, key.y + key.height);
+                gradient.addColorStop(0, 'rgba(255,255,255,0.5)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.1)');
+                ctx.fillStyle = gradient;
+                ctx.fill(); // Fill the same path with the gradient
+            }
+        }
+        
+        function drawPiano() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            whiteKeys.forEach(drawKey);
+            blackKeys.forEach(drawKey);
+        }
+
+        function handleCanvasClick(event) {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            let clickedKey = null;
+
+            for (const key of blackKeys) {
+                if (x >= key.x && x <= key.x + key.width && y >= key.y && y <= key.y + key.height) {
+                    clickedKey = key; break;
+                }
+            }
+            if (!clickedKey) {
+                for (const key of whiteKeys) {
+                    if (x >= key.x && x <= key.x + key.width && y >= key.y && y <= key.y + key.height) {
+                        clickedKey = key; break;
+                    }
+                }
+            }
+            if (clickedKey) {
+                playSound(clickedKey.frequency);
+                clickedKey.isPressed = true;
+                drawPiano();
+                setTimeout(() => {
+                    clickedKey.isPressed = false;
+                    drawPiano();
+                }, 200);
+            }
+        }
+        
+        /**
+         * Draws a single key on a given canvas context for exporting.
+         * @param {object} key - The key data.
+         * @param {CanvasRenderingContext2D} tempCtx - The context of the off-screen canvas.
+         */
+        function drawSingleKeyForExport(key, tempCtx) {
+            if (key.type === 'white') {
+                tempCtx.fillStyle = '#fff';
+                tempCtx.strokeStyle = '#333';
+                tempCtx.lineWidth = 2;
+            } else {
+                tempCtx.fillStyle = '#222';
+                tempCtx.strokeStyle = '#555';
+                tempCtx.lineWidth = 1;
+            }
+
+            const cornerRadius = 12;
+            tempCtx.beginPath();
+            tempCtx.moveTo(0, 0);
+            tempCtx.lineTo(key.width, 0);
+            tempCtx.lineTo(key.width, key.height - cornerRadius);
+            tempCtx.arcTo(key.width, key.height, key.width - cornerRadius, key.height, cornerRadius);
+            tempCtx.lineTo(cornerRadius, key.height);
+            tempCtx.arcTo(0, key.height, 0, key.height - cornerRadius, cornerRadius);
+            tempCtx.closePath();
+            tempCtx.fill();
+            tempCtx.stroke();
+
+            if (key.type === 'white') {
+                const gradient = tempCtx.createLinearGradient(0, 0, 0, key.height);
+                gradient.addColorStop(0, 'rgba(255,255,255,0.5)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.1)');
+                tempCtx.fillStyle = gradient;
+                tempCtx.fill();
+            }
+        }
+
+        /**
+         * Creates and downloads a PNG for a sample white key and a sample black key.
+         */
+        function exportKeysAsPNG() {
+            const sampleWhiteKey = whiteKeys[0];
+            const sampleBlackKey = blackKeys[0];
+
+            [sampleWhiteKey, sampleBlackKey].forEach(key => {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = key.width;
+                tempCanvas.height = key.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                drawSingleKeyForExport(key, tempCtx);
+
+                const link = document.createElement('a');
+                link.download = `piano-key-${key.type}.png`;
+                link.href = tempCanvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        canvas.addEventListener('click', handleCanvasClick);
+        document.getElementById('exportButton').addEventListener('click', exportKeysAsPNG);
+        
+        drawPiano();
+
+    </script>
+</body>
+</html>
+
