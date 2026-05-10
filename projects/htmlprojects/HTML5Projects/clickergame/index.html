@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Idle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Cookie Clicker</h1>
+    <div id="notification" class="hidden"></div>
+    
+    <p class="score-text">Cookies: <span id="score-display">0</span></p>
+    
+    <div class="stats-container">
+    	<p>per click: <span id="cpc-display">1.00</span></p>
+        <p>per second: <span id="cps-display">0.00</span></p>
+    </div>
+
+    <div class="button-container">
+        <button id="clicker-button">Click Me!</button>
+    </div>
+
+    <div id="upgrade-store"></div>
+    
+    <div class="save-load-container">
+        <button id="export-button">Export Save</button>
+        <button id="import-button">Import Save</button>
+    </div>
+    
+    <div id="save-notification" class="hidden"></div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

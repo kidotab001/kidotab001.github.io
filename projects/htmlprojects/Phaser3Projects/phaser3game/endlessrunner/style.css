@@ -1,0 +1,28 @@
+/* Template of Phaser 3 Project */
+body {
+    margin: 0;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#game-container {
+    aspect-ratio: 800 / 600;
+    width: auto;
+    height: 100vh;
+}
+
+@media (max-aspect-ratio: 800 / 600) {
+  #game-container  {
+    width: 100vw;
+    height: auto;
+  }
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

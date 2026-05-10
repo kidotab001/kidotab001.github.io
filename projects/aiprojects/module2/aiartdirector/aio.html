@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Art Director</title>
+    <style>
+        :root {
+    --bg-color: #1a1a2e;
+    --card-bg: #16213e;
+    --text-color: #eaeaea;
+    --accent-color: #0f3460;
+    --primary-btn: #e94560;
+    --primary-btn-hover: #ff2e63;
+    --input-bg: #0f3460;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --secondary-btn: #454ae9;
+    --secondary-btn-hover: #542eff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #b0b0b0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+input[type="password"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary-btn);
+}
+
+#generate-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-btn);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#generate-btn:hover:enabled {
+    background-color: var(--primary-btn-hover);
+}
+
+#generate-btn:active:enabled {
+    transform: scale(0.98);
+}
+
+#generate-btn:disabled {
+    opacity: 0.5;
+}
+
+#result-area {
+    width: 100%;
+    min-height: 300px;
+    background-color: var(--card-bg);
+    border: 2px dashed var(--accent-color);
+    border-radius: 12px;
+
+    /* Center content (image or text) inside */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+#placeholder-text {
+    color: #555;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+#generated-image {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#generated-image[hidden] {
+    display: none !important;
+}
+
+.input-row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: none;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+
+#error-text{
+    color: var(--primary-btn);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+#save-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--secondary-btn);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#save-btn:hover:enabled {
+    background-color: var(--secondary-btn-hover);
+}
+
+#save-btn:active:enabled {
+    transform: scale(0.98);
+}
+
+#save-btn:disabled {
+    opacity: 0.5;
+}
+    </style>
+</head>
+<body>
+    <h1>🎨 AI Art Director 🖌️</h1>
+    <div class="input-group">
+        <label for="api-key">Gemini API Key</label>
+        <input type="password" id="api-key" placeholder="Paste your Gemini API key here">
+    </div>
+    <div class="input-group">
+        <label for="user-prompt">Describe Your Vision</label>
+        <textarea id="user-prompt" placeholder="E.g. A futuristic city made of crystal..."></textarea>
+    </div>
+    <div class="input-row">
+        <div class="input-group" style="width: 50%; padding-right: 4px;">
+            <label for="style-select">Style</label>
+            <select id="style-select">
+                <option value="" selected>Default</option>
+                <option value="photorealistic">Photorealistic</option>
+                <option value="anime style">Anime</option>
+                <option value="oil painting">Oil Painting</option>
+                <option value="pixel art">Pixel Art</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="hand drawn">Hand Drawn</option>
+            </select>
+        </div>
+        <div class="input-group" style="width: 50%; padding-left: 4px;">
+            <label for="aspect-ratio-select">Aspect Ratio</label>
+            <select id="aspect-ratio-select">
+                <option value="1:1" selected>1:1</option>
+                <option value="2:3">2:3</option>
+                <option value="3:2">3:2</option>
+                <option value="3:4">3:4</option>
+                <option value="4:3">4:3</option>
+                <option value="4:5">4:5</option>
+                <option value="5:4">5:4</option>
+                <option value="9:16">9:16</option>
+                <option value="16:9">16:9</option>
+                <option value="21:9">21:9</option>
+            </select>
+        </div>
+    </div>
+    <button id="generate-btn">Generate Masterpiece</button>
+    <div id="result-area">
+        <div class="loader" id="spinner"></div>
+        <img id="generated-image" alt="AI Generated Art" hidden>
+        <p id="placeholder-text">Image will appear here</p>
+        <p id="error-text" hidden></p>
+    </div>
+    <button id="save-btn" disabled>Save Image</button>
+    <script>
+        /* Get Elements */
+const apiKeyInput = document.getElementById('api-key');
+const promptInput = document.getElementById('user-prompt');
+const generateBtn = document.getElementById('generate-btn');
+const imgElement = document.getElementById('generated-image');
+const placeholder = document.getElementById('placeholder-text');
+const styleSelect = document.getElementById('style-select');
+const aspectRatioSelect = document.getElementById('aspect-ratio-select');
+const spinner = document.getElementById('spinner');
+const errorText = document.getElementById('error-text');
+const saveBtn = document.getElementById('save-btn');
+
+/* Generate Image Button */
+generateBtn.addEventListener('click', async () => {
+    setLoading(true);
+    await generateImage();
+    setLoading(false);
+});
+
+apiKeyInput.addEventListener('input', (e) => {
+    const currentValue = e.target.value;
+    localStorage.setItem('gemini_ai_api_key', currentValue);
+});
+
+promptInput.addEventListener('input', (e) => {
+    const currentValue = e.target.value;
+    localStorage.setItem('ai_art_director_prompt', currentValue);
+});
+
+styleSelect.addEventListener('input', (e) => {
+    const currentValue = e.target.value;
+    localStorage.setItem('ai_art_director_style', currentValue);
+});
+
+aspectRatioSelect.addEventListener('input', (e) => {
+    const currentValue = e.target.value;
+    localStorage.setItem('ai_art_director_aspect_ratio', currentValue);
+});
+
+function loadInputs() {
+    const savedKey = localStorage.getItem('gemini_ai_api_key');
+    if (savedKey) {
+        apiKeyInput.value = savedKey;
+    }
+    const savedPrompt = localStorage.getItem('ai_art_director_prompt');
+    if (savedPrompt) {
+        promptInput.value = savedPrompt;
+    }
+    const savedStyle = localStorage.getItem('ai_art_director_style');
+    if (savedStyle) {
+        styleSelect.value = savedStyle;
+    }
+    const savedAspectRatio = localStorage.getItem('ai_art_director_aspect_ratio');
+    if (savedAspectRatio) {
+        aspectRatioSelect.value = savedAspectRatio;
+    }
+}
+loadInputs();
+
+/* Generate Image */
+async function generateImage(){
+    /* Inputs and Parameters */
+    const apiKey = apiKeyInput.value.trim();
+    const prompt = promptInput.value.trim();
+    const model = 'gemini-2.5-flash-image';
+    const aspectRatio = aspectRatioSelect.value;
+    const style = styleSelect.value;
+
+    /* Default Prompt */
+    let userPrompt = prompt;
+    if (!userPrompt)
+        userPrompt = "A futuristic city made of crystal";
+    if (style)
+        userPrompt = `${userPrompt} in ${style} style`;
+
+    /* Construct Payload */
+    const payload = {};
+    payload.contents = [{ 
+        parts: [{ text: userPrompt }] 
+    }];
+    payload.generationConfig = {
+        responseModalities: ["IMAGE"],
+        imageConfig: {
+            aspectRatio: aspectRatio
+        }
+    }
+
+    /* Construct URL */
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+    /* Send the Request */
+    try{
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-goog-api-key' : apiKey
+            },
+            body: JSON.stringify(payload)
+        });
+
+        /* Read the Response */
+        const data = await response.json();
+
+        /* Handle API Error */
+        if (!response.ok) {
+            if (data && data?.error){
+                throw new Error(`${data?.error?.message}`);
+            }else{
+                throw new Error(`API Error: ${response.status} ${response.statusText}`);
+            }
+        }
+
+        /* Get Image Data */
+        const candidate = data.candidates?.[0];
+        const imagePart = candidate?.content?.parts?.find(part => part.inlineData);
+
+        if (imagePart) {
+            const base64String = imagePart.inlineData.data;
+            const mimeType = imagePart.inlineData.mimeType || 'image/png';
+
+            imgElement.src = `data:${mimeType};base64,${base64String}`;
+            imgElement.removeAttribute('hidden');
+            placeholder.setAttribute('hidden', '');
+
+            //Enable the Save Image button
+            saveBtn.disabled = false;
+        }else{
+            let finishReason = candidate?.finishReason;
+            if (finishReason !== "STOP"){
+                throw new Error(`The AI refused your prompt with reason: ${finishReason}. Maybe try another one?`);
+            }else{
+                throw new Error(`No image data found. That's weird.`);
+            }
+        }
+
+    }catch(error){
+        errorText.innerText = `${error.message}`;
+        errorText.removeAttribute('hidden');
+    }
+}
+
+function setLoading(isLoading) {
+    if (isLoading){
+        spinner.style.display = 'block';
+        /* Hide Image */
+        imgElement.setAttribute('hidden', '');
+        placeholder.setAttribute('hidden', '');
+        errorText.setAttribute('hidden', '');
+        /* Disable Generate Button */
+        generateBtn.disabled = true;
+        generateBtn.innerText = "Painting...";
+        //Disable the Save Image button
+        saveBtn.disabled = true;
+    }else{
+        spinner.style.display = 'none';
+        /* Enable Generate Button */
+        generateBtn.disabled = false;
+        generateBtn.innerText = "Generate Masterpiece";
+    }
+}
+
+saveBtn.addEventListener('click', () => {
+    const downloadLink = document.createElement('a');
+    downloadLink.href = imgElement.src;
+    downloadLink.download = 'ai-image.png';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+});
+    </script>
+</body>
+</html>

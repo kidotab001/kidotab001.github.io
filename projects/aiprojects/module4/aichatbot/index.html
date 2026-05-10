@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 AI Chat Buddy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="toast">An error occurred</div>
+    <div class="chat-app">
+        <div class="header">
+            <div class="header-top">
+                <h2>💬 AI Chat Buddy</h2>
+                <input type="password" id="api-key" placeholder="🔑 Gemini API Key">
+            </div>
+            <div class="settings-panel">
+                <select id="persona-select">
+                </select>
+            </div>
+        </div>
+        <div class="chat-window" id="chat-window">
+            <div class="system-notice">Start a conversation!</div>
+            <div class="typing-dots" id="typing-indicator">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="message-input" placeholder="Type your message... (Commands: /clear, /undo)" autocomplete="off">
+            <button id="send-btn" class="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+

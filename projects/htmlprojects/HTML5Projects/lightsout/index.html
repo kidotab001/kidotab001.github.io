@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lights Out</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Lights Out</h1>
+    <div class="stats">
+        <p>Moves: <span id="moves">0</span></p>
+        <p>Time: <span id="time">0s</span></p>
+    </div>
+    <div class="board">
+    </div>
+    <div class="buttons">
+        <button id="hint-btn">Hint</button>
+        <button id="restart-btn">Restart</button>
+    </div>
+
+    <div class="modal-container" id="win-modal">
+        <div class="modal-content">
+            <h2>🏆 You Won! 🏆</h2>
+            <p>You solved the puzzle in <b><span id="result-moves">0</span></b> moves and <b><span id="result-time">0</span></b>s.</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <div class="modal-container" id="hint-modal">
+        <div class="modal-content">
+            <h2>⭐ Hints ⭐</h2>
+            <p>Start with the <b>second</b> row.</p>
+            <p>Click on every cell that has a light on in the row <b>above</b> it.<br>
+            Continue until the only remaining lights are in the <b>final</b> row.</p>
+            <p>See which lights are at the <b>bottom</b> row and click in the <b>first</b> row.</p>
+            <p>
+              ⬛⬛🟨🟨🟨 👉 ⬛⬛⬛🟩⬛<br>
+              ⬛🟨⬛🟨⬛ 👉 ⬛🟩⬛⬛🟩<br>
+              ⬛🟨🟨⬛🟨 👉 🟩⬛⬛⬛⬛<br>
+              🟨⬛⬛⬛🟨 👉 ⬛⬛⬛🟩🟩<br>
+              🟨⬛🟨🟨⬛ 👉 ⬛⬛⬛⬛🟩<br>
+              🟨🟨⬛🟨🟨 👉 ⬛⬛🟩⬛⬛<br>
+              🟨🟨🟨⬛⬛ 👉 ⬛🟩⬛⬛⬛
+            </p>
+            <p>Repeat the steps from the <b>second</b> row!</p>
+            <button id="close-hint-btn">Close</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Art Director</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>🎨 AI Art Director 🖌️</h1>
+    <div class="input-group">
+        <label for="api-key">Gemini API Key</label>
+        <input type="password" id="api-key" placeholder="Paste your Gemini API key here">
+    </div>
+    <div class="input-group">
+        <label for="user-prompt">Describe Your Vision</label>
+        <textarea id="user-prompt" placeholder="E.g. A futuristic city made of crystal..."></textarea>
+    </div>
+    <div class="input-row">
+        <div class="input-group" style="width: 50%; padding-right: 4px;">
+            <label for="style-select">Style</label>
+            <select id="style-select">
+                <option value="" selected>Default</option>
+                <option value="photorealistic">Photorealistic</option>
+                <option value="anime style">Anime</option>
+                <option value="oil painting">Oil Painting</option>
+                <option value="pixel art">Pixel Art</option>
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="hand drawn">Hand Drawn</option>
+            </select>
+        </div>
+        <div class="input-group" style="width: 50%; padding-left: 4px;">
+            <label for="aspect-ratio-select">Aspect Ratio</label>
+            <select id="aspect-ratio-select">
+                <option value="1:1" selected>1:1</option>
+                <option value="2:3">2:3</option>
+                <option value="3:2">3:2</option>
+                <option value="3:4">3:4</option>
+                <option value="4:3">4:3</option>
+                <option value="4:5">4:5</option>
+                <option value="5:4">5:4</option>
+                <option value="9:16">9:16</option>
+                <option value="16:9">16:9</option>
+                <option value="21:9">21:9</option>
+            </select>
+        </div>
+    </div>
+    <button id="generate-btn">Generate Masterpiece</button>
+    <div id="result-area">
+        <div class="loader" id="spinner"></div>
+        <img id="generated-image" alt="AI Generated Art" hidden>
+        <p id="placeholder-text">Image will appear here</p>
+        <p id="error-text" hidden></p>
+    </div>
+    <button id="save-btn" disabled>Save Image</button>
+    <script src="app.js"></script>
+</body>
+</html>

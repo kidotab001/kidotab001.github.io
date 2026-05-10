@@ -1,0 +1,197 @@
+:root {
+    --bg-color: #1a1a2e;
+    --card-bg: #16213e;
+    --text-color: #eaeaea;
+    --accent-color: #0f3460;
+    --primary-btn: #e94560;
+    --primary-btn-hover: #ff2e63;
+    --input-bg: #0f3460;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --secondary-btn: #454ae9;
+    --secondary-btn-hover: #542eff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #b0b0b0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+input[type="password"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary-btn);
+}
+
+#generate-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-btn);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#generate-btn:hover:enabled {
+    background-color: var(--primary-btn-hover);
+}
+
+#generate-btn:active:enabled {
+    transform: scale(0.98);
+}
+
+#generate-btn:disabled {
+    opacity: 0.5;
+}
+
+#result-area {
+    width: 100%;
+    min-height: 300px;
+    background-color: var(--card-bg);
+    border: 2px dashed var(--accent-color);
+    border-radius: 12px;
+
+    /* Center content (image or text) inside */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+#placeholder-text {
+    color: #555;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+#generated-image {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#generated-image[hidden] {
+    display: none !important;
+}
+
+.input-row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: none;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+
+#error-text{
+    color: var(--primary-btn);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+#save-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--secondary-btn);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+#save-btn:hover:enabled {
+    background-color: var(--secondary-btn-hover);
+}
+
+#save-btn:active:enabled {
+    transform: scale(0.98);
+}
+
+#save-btn:disabled {
+    opacity: 0.5;
+}

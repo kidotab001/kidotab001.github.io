@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 AI Detective</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="api-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal-btn">✖</button>
+            <h2>🔑 Authentication</h2>
+            <p>Provide a valid Gemini API key to access the AI Detective database.</p>
+            <input type="password" id="api-key" placeholder="AIzaSy...">
+            <div id="modal-error" class="modal-error">Invalid API Key. Please try again.</div>
+            <button id="save-api-btn" class="primary-btn" style="width: 100%;">Verify & Save</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="header-container">
+            <h1>🕵️ AI <span>Detective</span></h1>
+            <button id="settings-btn" title="API Settings">⚙️</button>
+        </div>
+        <div class="toolbar">
+            <button id="upload-btn" class="tool-btn">📁 Upload</button>
+            <button id="focus-btn" class="tool-btn"a>🔍 Focus</button>
+            <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp">
+        </div>
+        <div class="evidence-box" id="evidence-box">
+            <div class="placeholder-text" id="placeholder-text">
+                No evidence loaded.<br><small>Click "Upload" above.</small>
+            </div>
+            <img id="image-preview" alt="Evidence Preview">
+            <div id="focus-ring"></div>
+        </div>
+        <div class="options-row">
+            <label>
+                <input type="checkbox" id="web-search-toggle">
+                🌐 Web Search
+            </label>
+            <div style="flex: 1; display: flex; align-items: center; gap: 8px; margin-left: 10px;">
+                <label for="elaboration-select">Elaboration:</label>
+                <select id="elaboration-select">
+                    <option value="none">None</option>
+                    <option value="brief" selected>Brief</option>
+                    <option value="detailed">Detailed</option>
+                </select>
+            </div>
+        </div>
+        <div class="prompt-container">
+            <input type="text" id="prompt-input" placeholder="What do you see?">
+            <button id="analyze-btn" class="primary-btn">Analyze</button>
+        </div>
+        <div class="report-container">
+            <div id="report-card">
+                Awaiting evidence analysis...
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

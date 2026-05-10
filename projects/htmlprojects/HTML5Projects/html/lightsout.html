@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lights Out</title>
+    <style>
+:root {
+    --board-bg: #1e2b38;
+    --light-off-bg: #34495e;
+    --light-on-bg: #f1c40f;
+    --text-light: #ecf0f1;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/ed43637af6.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;    
+}
+
+h1{
+    margin-bottom: 0.5rem;
+}
+
+.stats{
+    display: flex;
+    gap: 2rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.board{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    background-color: var(--board-bg);
+    padding: 10px;
+    border-radius: 8px;
+    border: 3px solid black;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: background-color 0.5s ease, transform 0.5s ease;
+    user-select: none;
+}
+
+.cell:active{
+    transform: scale(0.95);
+}
+
+.light-on{
+    background-color: var(--light-on-bg);
+    box-shadow: 0 0 5px var(--light-on-bg); 
+}
+
+.light-off{
+    background-color: var(--light-off-bg);
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    color: black;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #3498db; 
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.modal-content button:hover {
+    opacity: 0.8;
+}
+
+.buttons{
+    margin-top: 1rem;
+    display: flex;
+    gap: 8px;
+}
+
+#restart-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    background-color: rgb(209, 34, 34);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 120px;
+}
+
+#restart-btn:hover {
+    background-color: rgb(233, 64, 64);
+}
+
+#hint-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    background-color: rgb(34, 127, 209);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 120px;
+}
+    </style>
+</head>
+<body>
+    <h1>Lights Out</h1>
+    <div class="stats">
+        <p>Moves: <span id="moves">0</span></p>
+        <p>Time: <span id="time">0</span>s</p>
+    </div>
+    <div class="board">
+    </div>
+    <div class="buttons">
+        <button id="hint-btn">Hint</button>
+        <button id="restart-btn">Restart</button>
+    </div>
+
+    <div class="modal-container" id="win-modal">
+        <div class="modal-content">
+            <h2>🏆 You Won! 🏆</h2>
+            <p>You solved the puzzle in <b><span id="result-moves">0</span></b> moves and <b><span id="result-time">0</span></b>s.</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <div class="modal-container" id="hint-modal">
+        <div class="modal-content">
+            <h2>⭐ Hints ⭐</h2>
+            <p>Start with the <b>second</b> row.</p>
+            <p>Click on every cell that has a light on in the row <b>above</b> it.<br>
+            Continue until the only remaining lights are in the <b>final</b> row.</p>
+            <p>See which lights are at the <b>bottom</b> row and click in the <b>first</b> row.</p>
+            <p>
+              ⬛⬛🟨🟨🟨 👉 ⬛⬛⬛🟩⬛<br>
+              ⬛🟨⬛🟨⬛ 👉 ⬛🟩⬛⬛🟩<br>
+              ⬛🟨🟨⬛🟨 👉 🟩⬛⬛⬛⬛<br>
+              🟨⬛⬛⬛🟨 👉 ⬛⬛⬛🟩🟩<br>
+              🟨⬛🟨🟨⬛ 👉 ⬛⬛⬛⬛🟩<br>
+              🟨🟨⬛🟨🟨 👉 ⬛⬛🟩⬛⬛<br>
+              🟨🟨🟨⬛⬛ 👉 ⬛🟩⬛⬛⬛
+            </p>
+            <p>Repeat the steps from the <b>second</b> row!</p>
+            <button id="close-hint-btn">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const gameBoard = document.querySelector(".board");
+const movesSpan = document.getElementById('moves');
+const timeSpan = document.getElementById('time');
+const winModal = document.getElementById('win-modal');
+const resultMovesSpan = document.getElementById('result-moves');
+const resultTimeSpan = document.getElementById('result-time');
+const playAgainBtn = document.getElementById('play-again-btn');
+const restartBtn = document.getElementById('restart-btn');
+const hintModal = document.getElementById('hint-modal');
+const hintBtn = document.getElementById('hint-btn');
+const closeHintBtn = document.getElementById('close-hint-btn');
+
+const sounds = {
+    switch: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/5fb2a68817.mp3",
+    win: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/0a2f8d2b31.mp3",
+};
+
+function playSound(soundKey){
+    const audio = new Audio(sounds[soundKey]);
+    audio.play();
+    return audio;
+};
+
+
+let boardState = [];
+let moves = 0;
+let time = 0;
+let timer = null;   
+
+function createBoard() {
+    // Create a solved board (all zeros)
+    let board = Array.from({ length: GRID_SIZE }, () => Array(GRID_SIZE).fill(0));
+
+    // Simulate a number of random presses to create the puzzle
+    const presses = Math.floor(Math.random() * 10) + 5; // 5 to 14 presses
+    for (let i = 0; i < presses; i++) {
+        const randomRow = Math.floor(Math.random() * GRID_SIZE);
+        const randomCol = Math.floor(Math.random() * GRID_SIZE);
+        // Use a temporary board for toggling to avoid modifying the one we are iterating over
+        const tempBoardState = board.map(row => [...row]);
+        boardState = tempBoardState; // Temporarily set global state for toggleLights
+        toggleLights(randomRow, randomCol);
+        board = boardState;
+    }
+    boardState = board;
+}
+
+// Game Constants
+const GRID_SIZE = 5;
+
+// Toggles a cell and its neighbors in the state array
+function toggleLights(row, col) {
+    playSound('switch');
+    const deltas = [[0, 0], [0, 1], [0, -1], [1, 0], [-1, 0]]; // self, right, left, down, up
+    deltas.forEach(([dr, dc]) => {
+        const newRow = row + dr;
+        const newCol = col + dc;
+        if (newRow >= 0 && newRow < GRID_SIZE && newCol >= 0 && newCol < GRID_SIZE) {
+            boardState[newRow][newCol] = 1 - boardState[newRow][newCol]; // Flip 0 to 1 or 1 to 0
+        }
+    });
+}
+
+function handleCellClick(event){
+    moves++;
+    movesSpan.innerText = moves;
+    const row = parseInt(event.target.dataset.row);
+    const col = parseInt(event.target.dataset.col);
+    toggleLights(row, col);
+    renderBoard();
+    checkWinCondition();
+}
+
+function checkWinCondition(){
+    const isWin = boardState.every(row => row.every(cell => cell === 0));
+    if (isWin){
+        playSound('win');
+        stopTimer();
+        resultMovesSpan.innerText = moves;
+        resultTimeSpan.innerText = time;
+        winModal.classList.add('show');
+    }
+}
+
+function renderBoard(){
+    gameBoard.innerHTML = '';
+    boardState.forEach((row, rowIndex) => {
+        row.forEach((cellState, colIndex) => {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            if (cellState === 1){
+                cell.classList.add('light-on');
+                cell.innerText = '💡';
+            }else{
+                cell.classList.add('light-off');
+                cell.innerText = '';
+            }
+            cell.dataset.row = rowIndex;
+            cell.dataset.col = colIndex;
+            cell.addEventListener('click', handleCellClick);
+            gameBoard.appendChild(cell);
+        });
+    });
+}
+
+function startTimer(){
+    stopTimer();
+   timer = setInterval(() => {
+        time++;
+        timeSpan.innerText = time;
+    }, 1000);
+}
+
+function stopTimer(){
+    if (timer)
+        clearInterval(timer);
+    timer = null;
+}
+
+function startGame(){
+    moves = 0;
+    movesSpan.innerText = moves;
+    time = 0;
+    timeSpan.innerText = time;
+    createBoard();
+    renderBoard();
+    startTimer();
+    winModal.classList.remove('show');
+}
+
+playAgainBtn.addEventListener('click', startGame);
+restartBtn.addEventListener('click', startGame);
+hintBtn.addEventListener('click', () => hintModal.classList.add('show'));
+closeHintBtn.addEventListener('click', () => hintModal.classList.remove('show'));
+
+startGame();
+    </script>
+</body>
+</html>

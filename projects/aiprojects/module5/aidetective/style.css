@@ -1,0 +1,222 @@
+:root {
+    --bg-color: #0f172a;
+    --text-color: #f8fafc;
+    --card-bg: #1e293b;
+    --primary-color: #6366f1;
+    --toolbar-bg: #334155;
+    --primary-hover: #4f46e5;
+    --accent-color: #ec4899;
+    --error-color: #ef4444;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: 1px solid #334155;
+    position: relative;
+}
+
+.header-container { text-align: center; position: relative; }
+h1 { margin: 0; font-weight: 300; letter-spacing: 1px; }
+h1 span { font-weight: 700; color: var(--primary-color); }
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    background-color: var(--toolbar-bg);
+    padding: 10px;
+    border-radius: 8px;
+    justify-content: space-between;
+}
+
+.tool-btn {
+    flex: 1;
+    background-color: transparent;
+    color: white;
+    border: 1px solid #475569;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    text-align: center;
+}
+.tool-btn:hover { background-color: #475569; }
+.tool-btn.active { background-color: var(--primary-color); border-color: var(--primary-color); }
+
+#file-input { display: none; }
+
+.evidence-box {
+    position: relative;
+    border: 2px dashed #475569;
+    border-radius: 12px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0f172a;
+    overflow: hidden;
+    user-select: none;
+    touch-action: none; 
+}
+
+#image-preview {
+    max-width: 100%;
+    max-height: 350px;
+    display: none;
+    z-index: 1;
+    pointer-events: none; 
+}
+
+.placeholder-text {
+    color: #64748b;
+    text-align: center;
+    z-index: 1;
+}
+
+.prompt-container { display: flex; gap: 10px; }
+
+input[type="text"] {
+    flex: 1; padding: 12px; border-radius: 8px;
+    border: 1px solid #334155; background-color: #0f172a;
+    color: white; font-size: 1rem;
+}
+
+button.primary-btn {
+    padding: 12px 24px; background-color: var(--primary-color);
+    color: white; border: none; border-radius: 8px;
+    font-weight: bold; cursor: pointer; transition: 0.2s;
+    min-width: 120px;
+}
+button.primary-btn:hover { background-color: var(--primary-hover); }
+button.primary-btn:disabled { background-color: #475569; cursor: not-allowed;}
+
+.report-container {
+    position: relative;
+}
+
+#report-card {
+    background-color: #0f172a; 
+    padding: 15px; 
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-color); 
+    min-height: 60px;
+    max-height: 250px; 
+    overflow-y: auto;  
+    line-height: 1.6; 
+    font-size: 0.95rem; 
+    color: #e2e8f0;
+    padding-right: 40px; 
+    scroll-behavior: smooth;
+}
+
+#report-card::-webkit-scrollbar { width: 8px; }
+#report-card::-webkit-scrollbar-track { background: #0f172a; border-radius: 8px; }
+#report-card::-webkit-scrollbar-thumb { background: #334155; border-radius: 8px; }
+#report-card::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+.loading { color: var(--primary-color); font-style: italic; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+    display: none; justify-content: center; align-items: center; z-index: 1000;
+}
+.modal-content {
+    background-color: var(--card-bg); padding: 30px; border-radius: 16px;
+    width: 90%; max-width: 400px; text-align: center; border: 1px solid #334155;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); position: relative;
+}
+.modal-content h2 { margin-top: 0; color: var(--text-color); }
+.modal-content p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px; }
+.modal-content input[type="password"] {
+    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155;
+    background-color: #0f172a; color: white; font-size: 1rem; box-sizing: border-box;
+    margin-bottom: 15px; text-align: center; letter-spacing: 2px;
+}
+.modal-error {
+    color: var(--error-color); font-size: 0.85rem; margin-bottom: 15px;
+    display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 6px;
+}
+#close-modal-btn {
+    position: absolute; top: 15px; right: 15px; background: none;
+    border: none; color: #64748b; font-size: 1.2rem; cursor: pointer; display: none;
+}
+#close-modal-btn:hover { color: white; }
+
+#settings-btn {
+    position: absolute; top: 0; right: 0;
+    background: none; border: none; color: #94a3b8;
+    font-size: 1.5rem; cursor: pointer; transition: 0.2s; padding: 0;
+}
+#settings-btn:hover { color: var(--text-color); transform: rotate(45deg); }
+
+.tool-btn:disabled { opacity: 50%; cursor: not-allowed; }
+
+#focus-ring {
+    display: none;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid #ff0000;
+    box-shadow: 0 0 0 1px black, inset 0 0 0 1px black;
+    cursor: move;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+}
+
+.options-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    background-color: var(--toolbar-bg);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.options-row label {
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+}
+
+.options-row input[type="checkbox"] {
+    accent-color: var(--primary-color);
+    width: 16px; height: 16px; cursor: pointer;
+}
+
+.options-row select {
+    flex: 1; padding: 6px; border-radius: 6px;
+    background-color: #0f172a; color: white;
+    border: 1px solid #475569; outline: none; cursor: pointer;
+}
+
+button.stop-btn { background-color: var(--error-color); }
+button.stop-btn:hover { background-color: #ac1515; }

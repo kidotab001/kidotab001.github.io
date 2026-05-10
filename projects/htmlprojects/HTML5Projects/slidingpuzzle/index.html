@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Puzzle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Sliding Puzzle</h1>
+    <div class="stats-container">
+        <p>Moves: <span id="moves">0</span></p>
+        <p>Time: <span id="time">0</span>s</p>
+    </div>
+    <div class="game-container">
+        <div class="game-board" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);">
+        </div>
+    </div>
+    <div class="buttons">
+        <button id="shuffle-btn">Shuffle</button>
+        <button id="give-up-btn">Give Up</button>
+    </div>
+
+    <div class="modal-container" id="win-modal">
+        <div class="modal-content">
+            <h2>You Won! 🎉</h2>
+            <img class="solved-puzzle-preview">
+            <p>You solved the puzzle in <b><span id="result-moves">0</span></b> moves and <b><span id="result-time">0</span>s</b>.</p>
+            <button id="play-again-btn">Play Again</button>
+            <button id="return-btn">Return to Menu</button>
+        </div>
+    </div>
+
+    <div class="modal-container show" id="menu-modal">
+        <div class="modal-content">
+            <h2>Sliding Puzzle</h2>
+            <p>Size: <select id="size-select">
+                <option value="3x3" selected>3x3</option>
+                <option value="4x4">4x4</option>
+                <option value="5x5">5x5</option>
+                <option value="6x6">6x6</option>
+            </select></p>
+            <p>Theme: <select id="theme-select">
+                <option value="nature" selected>Nature</option>
+                <option value="painting">Painting</option>
+                <option value="places">Places</option>
+            </select></p>
+            <button id="start-game-btn">Start Game</button>
+        </div>
+    </div>
+
+    <div class="modal-container" id="confirm-modal">
+        <div class="modal-content">
+            <h2>Are you sure?</h2>
+            <p>This will end your current game.</p>
+            <p>
+                <button id="confirm-btn">Confirm</button>
+                <button id="cancel-btn">Cancel</button>
+            </p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Says</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Simon Says</h1>
+    <div class="game-info">
+        <p>Level: <span id="level-display">0</span></p>
+    </div>
+    <div class="game-container">
+        <button class="simon-button" id="green">🎹</button>
+        <button class="simon-button" id="red">🎸</button>
+        <button class="simon-button" id="yellow">🎺</button>
+        <button class="simon-button" id="blue">🥁</button>
+    </div>
+    <p class="hidden" id="success-message">Nice!</p>
+
+    <div class="modal-container show" id="menu-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Welcome to Simon Says!</h2>
+            <p id="modal-message">Select a mode to begin.</p>
+            <div class="high-scores">
+                <p><b>Highest Reached Level:</b></p>
+                <p>
+                    Normal Mode: <b><span id="high-score">0</span></b>
+                    <br>
+                    Hard Mode: <b><span id="high-score-hard">0</span></b>
+                </p>
+            </div>
+            <div class="modal-buttons">
+                <button id="play-btn">Play Normal</button>
+                <button id="play-btn-hard">Play Hard</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

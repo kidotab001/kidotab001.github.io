@@ -1,0 +1,334 @@
+:root {
+    --board-bg: #1e2b38;
+    --light-off-bg: #34495e;
+    --light-on-bg: #f1c40f;
+    --text-light: #ecf0f1;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('img/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;    
+}
+
+h1{
+    margin-bottom: 0.5rem;
+}
+
+.stats{
+    display: flex;
+    gap: 2rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.board{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    background-color: var(--board-bg);
+    padding: 10px;
+    border-radius: 8px;
+    border: 3px solid black;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: background-color 0.5s ease, transform 0.5s ease;
+    user-select: none;
+}
+
+.cell:active{
+    transform: scale(0.95);
+}
+
+.light-on{
+    background-color: var(--light-on-bg);
+    box-shadow: 0 0 5px var(--light-on-bg); 
+}
+
+.light-off{
+    background-color: var(--light-off-bg);
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    color: black;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #3498db; 
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.modal-content button:hover {
+    opacity: 0.8;
+}
+
+.buttons{
+    margin-top: 1rem;
+    display: flex;
+    gap: 8px;
+}
+
+#restart-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    background-color: rgb(209, 34, 34);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 120px;
+}
+
+#restart-btn:hover {
+    background-color: rgb(233, 64, 64);
+}
+
+#hint-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    background-color: rgb(34, 127, 209);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 120px;
+}:root {
+    --board-bg: #1e2b38;
+    --light-off-bg: #34495e;
+    --light-on-bg: #f1c40f;
+    --text-light: #ecf0f1;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('img/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;    
+}
+
+h1{
+    margin-bottom: 0.5rem;
+}
+
+.stats{
+    display: flex;
+    gap: 2rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.board{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    background-color: var(--board-bg);
+    padding: 10px;
+    border-radius: 8px;
+    border: 3px solid black;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: background-color 0.5s ease, transform 0.5s ease;
+    user-select: none;
+}
+
+.cell:active{
+    transform: scale(0.95);
+}
+
+.light-on{
+    background-color: var(--light-on-bg);
+    box-shadow: 0 0 5px var(--light-on-bg); 
+}
+
+.light-off{
+    background-color: var(--light-off-bg);
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    color: black;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #3498db; 
+    cursor: pointer;
+    transition: opacity 0.3s;
+    width: 120px;
+}
+
+.modal-content button:hover {
+    opacity: 0.8;
+}
+
+.buttons{
+    margin-top: 1rem;
+    display: flex;
+    gap: 8px;
+}
+
+#restart-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    background-color: rgb(209, 34, 34);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 120px;
+}
+
+#restart-btn:hover {
+    background-color: rgb(233, 64, 64);
+}
+
+#hint-btn {
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    background-color: rgb(34, 127, 209);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 120px;
+}
+
+#hint-btn:hover {
+    background-color: rgb(86, 152, 210);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-container.show .modal-content {
+    animation: fadeIn 0.5s ease-out;
+}
+
+#hint-modal .modal-content{
+    max-width: 500px;
+}
+
+#hint-btn:hover {
+    background-color: rgb(86, 152, 210);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-container.show .modal-content {
+    animation: fadeIn 0.5s ease-out;
+}
+
+#hint-modal .modal-content{
+    max-width: 500px;
+}

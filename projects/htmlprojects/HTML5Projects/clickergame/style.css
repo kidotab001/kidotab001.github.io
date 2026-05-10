@@ -1,0 +1,160 @@
+
+* {
+  touch-action: manipulation;
+}
+
+
+body {
+    font-family: sans-serif;
+    text-align: center;
+    background-color: #f7f7f7;
+    color: #333;
+    padding-top: 50px;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+.score-text {
+    font-size: 1.5em;
+    color: #555;
+}
+
+#score-display {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.button-container {
+    margin-top: 30px;
+}
+
+#clicker-button {
+    font-size: 1.2em;
+    padding: 15px 30px;
+    border-radius: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#clicker-button:hover {
+    background-color: #0056b3;
+}
+
+#clicker-button:active {
+    transform: scale(0.97);
+}
+
+#upgrade-store {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.upgrade-button {
+    font-size: 1.2em;
+    padding: 15px 30px;
+    border-radius: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin: 4px;
+    min-width: 300px;
+}
+
+.upgrade-button:hover {
+    background-color: #0056b3;
+}
+
+.upgrade-button:active {
+    transform: scale(0.97);
+}
+
+.upgrade-button:disabled{
+   background-color: darkgray;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 1.1em;
+    color: #666;
+}
+
+#notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+#notification.hidden {
+    opacity: 0;
+}
+
+.save-load-container {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #ddd;
+}
+
+#export-button, #import-button {
+    font-size: 1em;
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#export-button {
+    background-color: #28a745; /* A friendly green */
+}
+
+#export-button:hover {
+    background-color: #218838;
+}
+
+#import-button {
+    background-color: #ffc107; /* A cautionary yellow */
+    color: #333;
+}
+
+#import-button:hover {
+    background-color: #e0a800;
+}
+
+#save-notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #17a2b8; /* A cool info-blue */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 1;
+    transition: all 0.5s;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#save-notification.hidden {
+    opacity: 0;
+    bottom: -50px; /* Makes it slide out downwards */
+}

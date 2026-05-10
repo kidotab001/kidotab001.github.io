@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Infinite Trivia Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="toast"></div>
+    <div id="api-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal-btn">✖</button>
+            <h2>🔑 Authentication</h2>
+            <p>Please provide a valid Gemini API Key.</p>
+            <input type="password" id="modal-api-key" placeholder="AIzaSy...">
+            <div id="modal-error" class="modal-error">Invalid API Key. Please try again.</div>
+            <button id="save-api-btn" class="primary-btn">Verify & Save</button>
+        </div>
+    </div>
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color: var(--wrong);">⚠️ Clear Topic Data?</h2>
+            <p id="delete-modal-text">Are you sure you want to permanently delete this topic and all its stored questions?</p>
+            <div class="modal-btn-row">
+                <button id="cancel-delete-btn">Cancel</button>
+                <button id="confirm-delete-btn">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="game-container">
+        <button id="settings-btn" title="API Settings">⚙️</button>
+        <div id="home-screen" class="screen active">
+            <h1>🧠 Infinite Trivia Quiz</h1>
+            <p>Select a topic or create your own!</p>
+            
+            <div class="add-topic-container">
+                <input type="text" id="new-topic-input" placeholder="E.g., 90s Action Movies" autocomplete="off">
+                <button id="add-topic-btn">Add Topic</button>
+                <button id="suggest-btn" title="Ask AI for an idea">✨ Suggest</button>
+            </div>
+
+            <div class="topic-list" id="topic-list"></div>
+
+            <div class="data-management">
+                <span>Quiz Memory</span>
+                <div class="data-buttons">
+                    <button id="import-btn" class="data-btn">📥 Import</button>
+                    <button id="export-btn" class="data-btn">📤 Export</button>
+                    <input type="file" id="import-file" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </div>
+        <div id="loading-screen" class="screen">
+            <h2>Summoning Knowledge...</h2>
+            <div class="loading-spinner"></div>
+            <p id="loading-text">The AI is generating 5 unique questions...</p>
+        </div>
+        <div id="quiz-screen" class="screen">
+            <div class="status-bar">
+                <span id="topic-label">Topic: Space</span>
+                <span id="progress-label">Question 1 / 5</span>
+            </div>
+
+            <div id="question-text" class="question-text">Loading question...</div>
+
+            <div class="options-grid" id="options-grid"></div>
+
+            <div id="feedback-box" class="feedback-box">
+                <div id="feedback-title" class="feedback-title">Correct!</div>
+                <div id="feedback-explanation" class="feedback-explanation">Explanation goes here.</div>
+                <button id="next-btn" class="next-btn">Next Question ➔</button>
+            </div>
+        </div>
+        <div id="result-screen" class="screen">
+            <h1>Checkpoint Reached!</h1>
+            <p>Your total score so far:</p>
+            <div id="score-text" class="score-text">0 / 5</div>
+            <p id="result-message">Do you want to keep going?</p>
+            
+            <div class="action-buttons">
+                <button id="continue-btn">Continue</button>
+                <button id="stop-btn">End Quiz</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mole Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Whack-a-Mole</h1>
+
+    <div class="scoreboard">
+        <h2>Score: <span id="score">0</span></h2>
+        <h2>Time Left: <span id="time-left">30</span></h2>
+    </div>
+
+    <div class="grid">
+        <table>
+            <tbody>
+                <script>
+                    for (let i = 0; i < 4; i++) {
+                        document.write("<tr>");
+                        for (let j = 0; j < 4; j++) {
+                            let id = i * 4 + j;
+                            document.write(`<td><button class="hole" id="btn${id}"><img></button></td>`);
+                        }
+                        document.write("</tr>");
+                    }
+                </script>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="start-prompt" class="prompt">
+        <div class="prompt-box">
+            <h2>Whack-a-Mole!</h2>
+            <p>Click the moles as fast as you can before time runs out.</p>
+            <button id="play-button">Play Game</button>
+        </div>
+    </div>
+
+    <div id="game-over-prompt" class="prompt">
+        <div class="prompt-box">
+            <h2>Game Over!</h2>
+            <p>Your Score: <span id="final-score">0</span></p>
+            <p>High Score: <span id="high-score">0</span></p>
+            <button id="restart-button">Play Again</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+/* General Body and Layout */
+body {
+    background-color: #dddddd;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    color: #fefae0;
+}
+
+h1 {
+    color: #633d26;
+}
+
+/* Scoreboard Styling */
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    width: 600px;
+    margin: 20px auto;
+    background-color: #895838;
+    border-radius: 10px;
+    padding: 10px;
+    border: 5px solid #633d26;
+}
+
+.scoreboard h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+/* Game Grid Styling */
+.grid {
+    width: fit-content;
+    height: auto;
+    margin: auto;
+    background-color: #b0b0b0;
+    border: 8px solid #633d26;
+    border-radius: 10px;
+}
+
+.hole {
+    width: 6em;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 2px solid #633d26;
+    background-color: #ffffff;
+    cursor: pointer;
+}
+
+.hole img {
+    width: 100%;
+    height: 100%;
+    content: url('img/hole.png'); /* This decides the hole image */
+}
+
+/* This class will be added by JavaScript to show the mole */
+.mole img {
+    width: 100%;
+    height: 100%;
+    content: url('img/mole.png');  /* This decides the mole image */
+}
+
+/* Pop-up Prompt Styling */
+.prompt {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+    justify-content: center;
+    align-items: center;
+}
+
+.prompt.visible {
+    display: flex; /* This class makes the prompt visible */
+}
+
+.prompt-box {
+    background-color: #fefae0;
+    color: #333;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.prompt-box button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: #bc6c25;
+    color: white;
+}

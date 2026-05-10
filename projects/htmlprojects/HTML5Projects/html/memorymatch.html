@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match</title>
+   	<style>
+   	body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f8ff;
+    background-image: url('https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/2d74a1a11a.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+h1 {
+    color: #47096e;
+    text-shadow: 2px 2px 4px #fff;
+}
+
+.stats {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 12px;
+    background-color: white;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+:root {
+    --card-size: 100px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, var(--card-size));
+    gap: 10px;
+    perspective: 1000px; /* For 3D flip effect */
+}
+
+.game-board-border {
+    background-color: white;
+    border: 4px solid rgb(192, 192, 192);
+    border-radius: 16px;
+    padding: 12px;
+}
+
+.card {
+    width: var(--card-size);
+    height: var(--card-size);
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.25s;
+    cursor: pointer;
+}
+
+.card.is-hidden {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Hides the back of the element when flipped */
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateZ(0);
+}
+
+.card-face.front {
+    background-color: #ffffff;
+    font-size: 50px;
+    border: 1px solid #7a7a7a;
+}
+
+.card-face.back {
+    background: linear-gradient(45deg, #4a69bd, #6a89cc);
+    transform: rotateY(180deg);
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content p {
+    line-height: 1.5;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+    background-color: #16a085;
+}
+
+.card.shake {
+    animation: shake 0.25s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.card.leap {
+    animation: leap 0.5s;
+}
+
+@keyframes leap {
+    0%, 100% { transform: translateY(0) }
+    50% { transform: translateY(-20px) }
+}
+
+.card.match .card-face.front {
+    box-shadow:0px 0px 0px 4px rgb(195, 255, 199) inset;
+}
+   	</style>
+</head>
+<body>
+    <h1>Memory Match</h1>
+
+    <div class="stats">
+        Pairs Found: <span id="score-count">0</span> 
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+        Time Left: <span id="time-left">60</span>s
+    </div>
+
+    <div class="game-board-border">
+        <div class="game-board">
+        </div>
+    </div>
+
+    <div class="modal-container show" id="start-modal">
+        <div class="modal-content">
+            <h2>🧠 Welcome to Memory Match! 👁️</h2>
+            <p>Find as many matching pairs as you can in <b>60</b> seconds.<br><b>Good luck!</b></p>
+            <p><b>High Score:</b> <span id="high-score-start">0</span></p>
+            <button id="start-game-btn">Start Game</button>
+        </div>
+    </div>
+
+    <div class="modal-container" id="end-modal">
+        <div class="modal-content">
+            <h2>Time's Up! ⏱️</h2>
+            <p>You have found <span id="final-score">0</span> pairs!</p>
+            <p><b>High Score:</b> <span id="high-score-end">0</span></p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+    const gameBoard = document.querySelector('.game-board');
+const scoreCountSpan = document.getElementById('score-count');
+const timeLeftSpan = document.getElementById('time-left');
+
+const startModal = document.getElementById('start-modal');
+const endModal = document.getElementById('end-modal');
+const startGameBtn = document.getElementById('start-game-btn');
+const playAgainBtn = document.getElementById('play-again-btn');
+const highScoreStartSpan = document.getElementById('high-score-start');
+const finalScoreSpan = document.getElementById('final-score');
+const highScoreEndSpan = document.getElementById('high-score-end');
+
+const sounds = {
+    correct: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/770f144b44.mp3",
+    incorrect: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/01c8df23bc.mp3",
+    flip: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/2042f96fb9.mp3",
+    timeup: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/27d4dda477.mp3",
+    reveal: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/66d7d0864f.mp3"
+};
+
+function playSound(soundKey){
+    const audio = new Audio(sounds[soundKey]);
+    audio.play();
+    return audio;
+};
+
+const emojiSets = {
+    animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'],
+    fruits: ['🍎', '🍌', '🍇', '🍓', '🍒', '🍑', '🍍', '🥝'],
+    food: ['🍕', '🍔', '🍟', '🌭', '🍿', '🧇', '🍩', '🍪'],
+    plants: ['🌵', '🎄', '🍁', '🌴', '🌱', '🌷', '🌼', '🍀'],
+    smileys: ['😀', '😂', '😍', '😎', '😢', '😡', '😱', '🥳']
+};
+
+let lockBoard = false;
+let hasFlippedCard = false;
+let firstCard, secondCard;
+let score = 0;
+let timeLeft = 60;
+let totalPairs = 0;
+let foundPairs = 0;
+let timerId = null;
+let highScore = localStorage.getItem('memoryMatchHighScore') || 0;
+
+// Fisher-Yates Shuffle Algorithm
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function generateCards(cardValues) {
+    shuffle(cardValues);
+    gameBoard.innerHTML = ''; // Clear previous board
+
+    cardValues.forEach(emoji => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.classList.add('is-hidden');
+
+        card.dataset.emoji = emoji; // Use data-* attribute to store emoji
+
+        card.innerHTML = `
+            <div class="card-face front">${emoji}</div>
+            <div class="card-face back"></div>
+        `;
+        card.addEventListener('click', flipCard);
+        gameBoard.appendChild(card);
+    });
+}
+
+function flipCard(){
+    if (lockBoard) return;
+    if (this === firstCard) return; // Prevent double-clicking the same card
+    this.classList.remove('is-hidden');
+    if (!hasFlippedCard) {
+        // First card flipped
+        hasFlippedCard = true;
+        firstCard = this;
+    } else {
+        // Second card flipped
+        secondCard = this;
+        checkForMatch(); // Unflip the two cards
+    }
+    playSound("flip");
+}
+
+// Reset variables after a turn
+function turnEnd() {
+    [hasFlippedCard, lockBoard] = [false, false];
+    [firstCard, secondCard] = [null, null];
+}
+
+function unflipCards() {
+    playSound("incorrect");
+    firstCard.classList.add('shake');
+    secondCard.classList.add('shake');
+    lockBoard = true; // Prevent other cards from being flipped
+    setTimeout(() => {
+        firstCard.classList.add('is-hidden');
+        secondCard.classList.add('is-hidden');
+        firstCard.classList.remove('shake');
+        secondCard.classList.remove('shake');
+        turnEnd();
+    }, 500); // Wait 0.5s before flipping back
+}
+
+// Check if the two flipped cards match
+function checkForMatch() {
+    const isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+    isMatch ? keepCards() : unflipCards();
+}
+
+// Handle matching cards
+function keepCards() {
+    playSound("correct");
+    score++;
+    scoreCountSpan.innerText = score;
+    firstCard.classList.add('leap');
+    secondCard.classList.add('leap');
+    firstCard.classList.add('match');
+    secondCard.classList.add('match');
+    firstCard.removeEventListener('click', flipCard);
+    secondCard.removeEventListener('click', flipCard);
+    turnEnd();
+
+    foundPairs++;
+    // Check for reset condition
+    if (foundPairs === totalPairs) {
+        setTimeout(() => {
+            newBoard();
+        }, 500);
+    }
+}
+
+// Main game start/reset function
+function startGame() {
+    // Reset game state
+    score = 0;
+    timeLeft = 60;
+    scoreCountSpan.textContent = score;
+    timeLeftSpan.textContent = timeLeft;
+    // Create new board
+    newBoard();
+}
+
+function newBoard(){
+    lockBoard = true;
+    //  Randomly select an emoji set
+    const setKeys = Object.keys(emojiSets);
+    const randomSetKey = setKeys[Math.floor(Math.random() * setKeys.length)];
+    const emojis = emojiSets[randomSetKey];
+    const cardValues = [...emojis, ...emojis];
+
+    totalPairs = emojis.length;
+    foundPairs = 0;
+
+    generateCards(cardValues);
+
+    // Initial reveal of all cards
+    const cards = document.querySelectorAll('.card');
+    setTimeout(() => {
+        cards.forEach(card => { 
+            card.classList.remove('is-hidden');
+            card.classList.remove('leap');
+            card.classList.remove('match');
+        });
+    });
+    playSound("reveal");
+    // Hide the card after some time
+    setTimeout(() => {
+        cards.forEach(card => card.classList.add('is-hidden'));
+        lockBoard = false;
+        // Start the timer after cards are hidden
+        if (!timerId)
+            timerId = setInterval(updateTimer, 1000);
+    }, 2000);
+}
+
+// Timer function
+function updateTimer() {
+    timeLeft--;
+    timeLeftSpan.textContent = timeLeft;
+    if (timeLeft === 0){
+        endGame();
+    }
+}
+
+// Game over function
+function endGame() {
+    playSound("timeup");
+    clearInterval(timerId);
+    timerId = null;
+    lockBoard = true;
+
+    if (score > highScore){
+        highScore = score;
+        localStorage.setItem('memoryMatchHighScore', highScore);
+    }
+
+    // Display result
+    finalScoreSpan.innerText = score;
+    highScoreEndSpan.innerText = highScore;
+    endModal.classList.add('show');
+}
+
+startGameBtn.addEventListener('click', () => {
+    startModal.classList.remove('show');
+    startGame();
+});
+
+playAgainBtn.addEventListener('click', () => {
+    endModal.classList.remove('show');
+    startGame();
+});
+
+// Initial Setup
+function init() {
+    generateCards(Array(16).fill(''));
+    lockBoard = true;
+    highScoreStartSpan.innerText = highScore;
+}
+init();
+    </script>
+</body>
+</html>

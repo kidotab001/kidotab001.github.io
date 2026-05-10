@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Memory Match</h1>
+
+    <div class="stats">
+        Pairs Found: <span id="score-count">0</span> 
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+        Time Left: <span id="time-left">60</span>s
+    </div>
+
+    <div class="game-board-border">
+        <div class="game-board">
+        </div>
+    </div>
+
+    <div class="modal-container show" id="start-modal">
+        <div class="modal-content">
+            <h2>🧠 Welcome to Memory Match! 👁️</h2>
+            <p>Find as many matching pairs as you can in <b>60</b> seconds.<br><b>Good luck!</b></p>
+            <p><b>High Score:</b> <span id="high-score-start">0</span></p>
+            <button id="start-game-btn">Start Game</button>
+        </div>
+    </div>
+
+    <div class="modal-container" id="end-modal">
+        <div class="modal-content">
+            <h2>Time's Up! ⏱️</h2>
+            <p>You have found <span id="final-score">0</span> pairs!</p>
+            <p><b>High Score:</b> <span id="high-score-end">0</span></p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

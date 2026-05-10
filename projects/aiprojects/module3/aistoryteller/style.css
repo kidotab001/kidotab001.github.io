@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+body {
+    background: linear-gradient(to right, #e8d2ff, #b6d5fd); 
+    font-family: 'Patrick Hand', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    color: #374151;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: #9333ea;
+    font-size: 3rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0px rgba(255,255,255,0.8);
+}
+
+.menu-container {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+input[type="password"] {
+    width: 100%;
+    padding: 10px 0px;
+    border: 2px solid #d1d5db;
+    border-radius: 12px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-align: center;
+    background-color: #fff;
+}
+
+#story-output {
+    background-color: #fffbeb;
+    border: 2px dashed #fcd34d;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    text-align: left;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.ai-text {
+    color: #4b5563;
+}
+
+.user-text {
+    color: #9333ea;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-family: 'Patrick Hand', cursive;
+    outline: none;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    height: 80px;
+    resize: none;
+}
+
+button {
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.1);
+    font-family: 'Patrick Hand', cursive;
+    position: relative;
+    top: 0;
+}
+
+#go-btn {
+    flex: 2;
+    background-color: #9333ea;
+    color: white;
+    box-shadow: 0 4px 0px #7e22ce;
+}
+
+#go-btn:hover {
+    background-color: #a855f7;
+    top: -2px;
+    box-shadow: 0 6px 0px #7e22ce;
+}
+
+#go-btn:active {
+    top: 2px;
+    box-shadow: 0 0px 0px #7e22ce;
+}
+
+#go-btn:disabled {
+    background-color: #d8b4fe;
+    box-shadow: none;
+    cursor: wait;
+    top: 2px;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.pulsing {
+    color: #3355ea;
+    font-style: italic;
+    animation: pulse 1.5s infinite;
+}
+
+textarea:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.settings-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+select {
+    flex: 1;
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #d1d5db;
+    border-radius: 12px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.1rem;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+select:focus, input:focus, textarea:focus {
+    border-color: #c084fc;
+    box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.2);
+}
+
+.error-text {
+     color: #ef4444;
+     font-weight: bold;
+     display: block;
+     margin-top: 10px;
+     padding: 10px;
+     background: rgba(254, 226, 226, 0.5);
+     border-radius: 8px;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+}
+
+#reset-btn {
+    flex: 1;
+    background-color: #f3f4f6;
+    color: #ef4444;
+    box-shadow: 0 4px 0px #d1d5db;
+}
+
+#reset-btn:hover {
+    background-color: #ffe4e6;
+}
+
+#reset-btn:active {
+    box-shadow: 0 0px 0px #d1d5db;
+    top: 4px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: popIn 0.3s ease;
+}
+
+.modal-title {
+    color: #9333ea;
+    font-size: 1.8rem;
+    margin-top: 0;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+#confirm-reset-btn {
+    background-color: #ef4444;
+    color: white;
+    box-shadow: 0 4px 0px #b91c1c;
+}
+
+#confirm-reset-btn:hover {
+    background-color: #dc2626;
+    top: -2px;
+    box-shadow: 0 6px 0px #b91c1c;
+}
+
+#cancel-reset-btn {
+    background-color: #e5e7eb;
+    color: #374151;
+    box-shadow: 0 4px 0px #9ca3af;
+}
+
+#cancel-reset-btn:hover {
+    background-color: #d1d5db;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ TAL-E Storyteller ✨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="menu-container">
+        <h1>✨ TAL-E Storyteller ✨</h1>
+        <input type="password" id="api-key" placeholder="🔑 Enter Gemini API Key here">
+        <div class="settings-row">
+            <select id="mood-picker">
+                <option value="happy">😊 Happy</option>
+                <option value="scared">😨 Scared</option>
+                <option value="angry">😡 Angry</option>
+                <option value="silly">🤪 Silly</option>
+                <option value="poetic">📜 Poetic</option>
+            </select>
+            <select id="world-select">
+                <option value="fantasy">🏰 Fantasy World</option>
+                <option value="space">🚀 Space Station</option>
+                <option value="jungle">🌴 Deep Jungle</option>
+                <option value="ocean">🌊 Underwater</option>
+                <option value="cyberpunk">🌃 Cyberpunk City</option>
+            </select>
+        </div>
+        <div id="story-output"><span class="placeholder-text">Once upon a time, waiting for an adventure...</span></div>
+        <textarea id="user-input" placeholder="Type what happens next... (or leave empty for AI to decide!)"></textarea>
+        <div class="button-row">
+            <button id="go-btn">Go!</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+        
+    </div>
+
+    <div id="reset-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title">Restart Adventure?</h2>
+            <p>This will erase your current story and start over. Are you sure?</p>
+            <div class="modal-buttons">
+                <button id="cancel-reset-btn">No, Keep Playing</button>
+                <button id="confirm-reset-btn">Yes, Restart</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

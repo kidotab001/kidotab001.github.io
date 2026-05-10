@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Puzzle</title>
+    <style>
+        /* General Styling */
+:root {
+    --primary-bg: #34495e;
+    --secondary-bg: #2c3e50;
+    --text-light: #ecf0f1;
+    --accent-color: #3498db;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--primary-bg);
+    background-image: url('https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/dbebd11f7f.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    background-size: 100% 100%;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1rem;
+}
+
+/* Stats */
+.stats-container {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.2rem;
+    margin: 0.5rem 0;
+}
+
+/* Game Container and Board */
+.game-container {
+    width: 90vw;
+    max-width: 600px;
+    aspect-ratio: 4 / 3;
+    background-color: var(--secondary-bg);
+    padding: 10px;
+    border-radius: 8px;
+    border: 3px solid #000;
+}
+
+.game-board {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.tile {
+    position: absolute;
+    background-size: 400% 300%;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+    padding-left: 4px;
+    padding-top: 4px;
+    cursor: pointer;
+    transition: top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+}
+
+.tile-number {
+    font-size: 1rem;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 0 5px black, 0 0 5px black;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    color: black;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #3498db; 
+    cursor: pointer;
+    transition: opacity 0.3s;
+    width: 120px;
+}
+
+.modal-content button:hover {
+    opacity: 0.8;
+}
+
+.modal-container.show .modal-content {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.solved-puzzle-preview {
+    width: 80%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.confetti {
+    position: fixed;
+    top: -10px;
+    width: 10px;
+    height: 10px;
+    z-index: 1000;
+    opacity: 0.7;
+    animation: fall 5s linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+#start-game-btn{
+    width: 140px;
+}
+
+select{
+    width: 120px;
+}
+
+.buttons{
+    margin-top: 1rem;
+    display: flex;
+    gap: 8px;  
+}
+
+.buttons button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #f4722d; 
+    cursor: pointer;
+    transition: opacity 0.3s;
+    width: 120px;
+}
+
+.buttons button:hover {
+    opacity: 0.8;
+}
+
+#give-up-btn {
+    background-color: #f42d2d;
+}
+
+#cancel-btn{
+    background-color: gray;
+}
+#return-btn{
+    background-color: gray;
+    width: 160px;
+}
+    </style>>
+</head>
+<body>
+    <h1>Sliding Puzzle</h1>
+    <div class="stats-container">
+        <p>Moves: <span id="moves">0</span></p>
+        <p>Time: <span id="time">0</span>s</p>
+    </div>
+    <div class="game-container">
+        <div class="game-board" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);">
+        </div>
+    </div>
+    <div class="buttons">
+        <button id="shuffle-btn">Shuffle</button>
+        <button id="give-up-btn">Give Up</button>
+    </div>
+
+    <div class="modal-container" id="win-modal">
+        <div class="modal-content">
+            <h2>You Won! 🎉</h2>
+            <img class="solved-puzzle-preview">
+            <p>You solved the puzzle in <b><span id="result-moves">0</span></b> moves and <b><span id="result-time">0</span>s</b>.</p>
+            <button id="play-again-btn">Play Again</button>
+            <button id="return-btn">Return to Menu</button>
+        </div>
+    </div>
+
+    <div class="modal-container show" id="menu-modal">
+        <div class="modal-content">
+            <h2>Sliding Puzzle</h2>
+            <p>Size: <select id="size-select">
+                <option value="3x3" selected>3x3</option>
+                <option value="4x4">4x4</option>
+                <option value="5x5">5x5</option>
+                <option value="6x6">6x6</option>
+            </select></p>
+            <p>Theme: <select id="theme-select">
+                <option value="nature" selected>Nature</option>
+                <option value="painting">Painting</option>
+                <option value="places">Places</option>
+            </select></p>
+            <button id="start-game-btn">Start Game</button>
+        </div>
+    </div>
+
+    <div class="modal-container" id="confirm-modal">
+        <div class="modal-content">
+            <h2>Are you sure?</h2>
+            <p>This will end your current game.</p>
+            <p>
+                <button id="confirm-btn">Confirm</button>
+                <button id="cancel-btn">Cancel</button>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const gameBoard = document.querySelector('.game-board');
+const movesSpan = document.querySelector('#moves');
+const timeSpan = document.querySelector('#time');
+const winModal = document.querySelector('#win-modal');
+const resultMovesSpan = document.querySelector('#result-moves');
+const resultTimeSpan = document.querySelector('#result-time');
+const playAgainButton = document.querySelector('#play-again-btn');
+const solvedPuzzleImg = document.querySelector('.solved-puzzle-preview');
+const menuModal = document.querySelector('#menu-modal');
+const sizeSelect = document.querySelector('#size-select');
+const themeSelect = document.querySelector('#theme-select');
+const startGameBtn = document.querySelector('#start-game-btn');
+const shuffleBtn = document.querySelector('#shuffle-btn');
+const giveUpBtn = document.querySelector('#give-up-btn');
+const confirmModal = document.querySelector('#confirm-modal');
+const confirmBtn = document.querySelector('#confirm-btn');
+const cancelBtn = document.querySelector('#cancel-btn');
+const returnBtn = document.querySelector('#return-btn');
+
+const sounds = {
+    slide: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/ccd38745c3.mp3",
+    win: "https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/0310108f52.mp3",
+};
+
+function playSound(soundKey){
+    const audio = new Audio(sounds[soundKey]);
+    audio.play();
+    return audio;
+};
+
+const imageSources = {
+    nature: [
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/bd5bfc3ce1.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/5ff30dd359.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/6ef926c091.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/c3854795cc.jpg',
+    ],
+    painting: [
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/4ff91c9276.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/a2e8ca197d.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/03da4c7bfe.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/12e64d19d2.jpg',
+    ],
+    places: [
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/a6b9505dd9.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/a550ae2b51.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/c85ca0bf59.jpg',
+        'https://kidocode-asset.s3-ap-southeast-1.amazonaws.com/hoc/assets/courses/7d4238c864.jpg',
+    ]
+};
+
+// --- GAME STATE ---
+let settings = {
+    rows: 3,
+    cols: 3,
+    theme: 'nature'
+};
+let boardState = [];
+let emptyTile = {};
+let currentImageUrl = '';
+let moves = 0;
+let time = 0;
+let timer = null;
+
+function createBoardState(){
+    boardState = [];
+    let counter = 1;
+    for (let r = 0; r < settings.rows; r++) {
+        const row = [];
+        for (let c = 0; c < settings.cols; c++) {
+            row.push(counter++);
+        }
+        boardState.push(row);
+    }
+    // Set the last tile as the empty one (0)
+    boardState[settings.rows - 1][settings.cols - 1] = 0;
+    emptyTile = { row: settings.rows - 1, col: settings.cols - 1 };
+}
+
+function shuffleBoard() {
+    // Start with a solved board and make a large number of random valid moves
+    for (let i = 0; i < 1000; i++) {
+        const neighbors = [];
+        const { row, col } = emptyTile;
+        if (row > 0) neighbors.push({ row: row - 1, col });
+        if (row < settings.rows - 1) neighbors.push({ row: row + 1, col });
+        if (col > 0) neighbors.push({ row, col: col - 1 });
+        if (col < settings.cols - 1) neighbors.push({ row, col: col + 1 });
+
+        const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
+        swapTiles(randomNeighbor.row, randomNeighbor.col, false); // Don't animate shuffle
+    }
+}
+
+function renderBoard(){
+    gameBoard.innerHTML = '';
+    gameBoard.style.gridTemplateColumns = `repeat(${settings.cols}, 1fr)`;
+    gameBoard.style.gridTemplateRows = `repeat(${settings.rows}, 1fr)`;
+    const tileWidth = 100 / (settings.cols - 1);
+    const tileHeight = 100 / (settings.rows - 1);
+    for (let r = 0; r < settings.rows; r++) {
+        for (let c = 0; c < settings.cols; c++) {
+            const tileValue = boardState[r][c];
+            if (tileValue === 0) continue;
+            const tile = document.createElement('div');
+            tile.classList.add('tile');
+            tile.style.width = `${100 / settings.cols}%`;
+            tile.style.height = `${100 / settings.rows}%`;
+            tile.style.top = `${r * (100 / settings.rows)}%`;
+            tile.style.left = `${c * (100 / settings.cols)}%`;
+            tile.dataset.value = tileValue;
+            gameBoard.appendChild(tile);
+            tile.style.backgroundImage = `url(${currentImageUrl})`;
+            tile.style.backgroundSize = `${settings.cols * 100}% ${settings.rows * 100}%`;
+            const originalRow = Math.floor((tileValue - 1) / settings.cols);
+            const originalCol = (tileValue - 1) % settings.cols;
+            tile.style.backgroundPosition = `${originalCol * tileWidth}% ${originalRow * tileHeight}%`;
+            const number = document.createElement('span');
+            number.classList.add('tile-number');
+            number.textContent = tileValue;
+            tile.appendChild(number);
+            tile.addEventListener('click', handleTileClick);
+        }
+    }
+}
+
+function handleTileClick(event){
+    moves++;
+    movesSpan.innerText = moves;
+    const clickedValue = parseInt(event.currentTarget.dataset.value);
+    let clickedTilePos;
+    for (let r = 0; r < settings.rows; r++) {
+        const c = boardState[r].indexOf(clickedValue);
+        if (c > -1) {
+            clickedTilePos = { row: r, col: c };
+            break;
+        }
+    }
+    const { row: r1, col: c1 } = clickedTilePos;
+    const { row: r2, col: c2 } = emptyTile;
+    if (Math.abs(r1 - r2) + Math.abs(c1 - c2) === 1) {
+        playSound('slide');
+        swapTiles(r1, c1, true);
+    }
+}
+
+function swapTiles(row, col, animate) {
+    const tileValue = boardState[row][col];
+
+    // Update state array
+    boardState[emptyTile.row][emptyTile.col] = tileValue;
+    boardState[row][col] = 0;
+
+    if (animate) {
+        // Animate the tile on the DOM
+        const tileElement = document.querySelector(`[data-value='${tileValue}']`);
+        tileElement.style.top = `${emptyTile.row * (100 / settings.rows)}%`;
+        tileElement.style.left = `${emptyTile.col * (100 / settings.cols)}%`;
+    }
+
+    // Update empty tile coordinates
+    emptyTile = { row, col };
+
+    if (animate) {
+        // Debounce win check until after animation
+        setTimeout(checkWin, 400);
+    }
+}
+
+function checkWin() {
+    let counter = 1;
+    for (let r = 0; r < settings.rows; r++) {
+        for (let c = 0; c < settings.cols; c++) {
+            if (r === settings.rows - 1 && c === settings.cols - 1) {
+                if (boardState[r][c] !== 0) return; // Last tile must be empty
+            } else {
+                if (boardState[r][c] !== counter++) return;
+            }
+        }
+    }
+    playSound('win');
+    stopTimer();
+    resultMovesSpan.innerText = moves;
+    resultTimeSpan.innerText = time;
+    solvedPuzzleImg.src = currentImageUrl;
+    winModal.classList.add('show');
+    showConfetti();
+}
+
+function showConfetti() {
+    const confettiContainer = document.body;
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.animationDuration = Math.random() * 2 + 3 + 's';
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confettiContainer.appendChild(confetti);
+
+        // Remove confetti after animation
+        confetti.addEventListener('animationend', () => {
+            confetti.remove();
+        });
+    }
+}
+
+function startTimer(){
+    stopTimer();
+    timer = setInterval(() => {
+        time++;
+        timeSpan.innerText = time;
+    }, 1000);
+}
+
+function stopTimer(){
+    if (timer)
+        clearInterval(timer);
+    timer = null;
+}
+
+function initGame(){
+    moves = 0;
+    movesSpan.innerText = moves;
+    time = 0;
+    timeSpan.innerText = time;
+
+    // Select random image
+    const themeImages = imageSources[settings.theme];
+    currentImageUrl = themeImages[Math.floor(Math.random() * themeImages.length)];
+    createBoardState();
+    shuffleBoard();
+    renderBoard();
+    startTimer();
+}
+
+function returnToMenu(){
+    stopTimer();
+    moves = 0;
+    movesSpan.innerText = moves;
+    time = 0;
+    timeSpan.innerText = time;
+    gameBoard.innerHTML = '';
+    winModal.classList.remove('show');
+    confirmModal.classList.remove('show');
+    menuModal.classList.add('show');
+}
+
+playAgainButton.addEventListener('click', () => {
+    winModal.classList.remove('show');
+    initGame();
+});
+startGameBtn.addEventListener('click', () => {
+    const [rows, cols] = sizeSelect.value.split('x').map(Number);
+    settings.rows = rows;
+    settings.cols = cols;
+    settings.theme = themeSelect.value;
+    menuModal.classList.remove('show');
+    initGame();
+});
+shuffleBtn.addEventListener('click', () => {
+    for(let i = 0; i < 5; i++){
+        playSound('slide');
+    }
+    setTimeout(() => {
+        shuffleBoard();
+        renderBoard();
+    }, 500);
+});
+giveUpBtn.addEventListener('click', () => {
+    confirmModal.classList.add('show');
+});
+cancelBtn.addEventListener('click', () => {
+    confirmModal.classList.remove('show');
+});
+confirmBtn.addEventListener('click', returnToMenu);
+returnBtn.addEventListener('click', returnToMenu);
+    </script>
+</body>
+</html>
